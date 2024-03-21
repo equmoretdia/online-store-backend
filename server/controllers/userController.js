@@ -1,7 +1,5 @@
-class UserController {
-  async registration(req, res) {}
-  async login(req, res) {}
-  async checkAuth(req, res) {}
-}
+const registration = async (req, res) => {};
+const login = async (req, res) => {};
+const checkAuth = async (req, res) => {};
 
-module.exports = new UserController();
+module.exports = { registration, login, checkAuth };

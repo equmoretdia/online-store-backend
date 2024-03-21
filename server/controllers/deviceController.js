@@ -1,7 +1,7 @@
-class DeviceController {
-  async create(req, res) {}
-  async getAll(req, res) {}
-  async getOne(req, res) {}
-}
+const create = async (req, res) => {};
 
-module.exports = new DeviceController();
+const getAll = async (req, res) => {};
+
+const getOne = async (req, res) => {};
+
+module.exports = { create, getAll, getOne };

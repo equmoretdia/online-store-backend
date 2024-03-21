@@ -1,6 +1,7 @@
-class TypeController {
-  async create(req, res) {}
-  async getAll(req, res) {}
-}
+const create = async (req, res) => {};
 
-module.exports = new TypeController();
+const getAll = async (req, res) => {
+  res.status(200).json({ message: "it's working!" });
+};
+
+module.exports = { create, getAll };

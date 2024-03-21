@@ -1,8 +1,8 @@
-const Router = require("express");
-const router = new Router();
-const brandController = require("../controllers/brandController");
+const express = require("express");
+const router = express.Router();
+const ctrl = require("../controllers/brandController");
 
-router.get("/", brandController.getAll);
-router.post("/", brandController.create);
+router.get("/", ctrl.getAll);
+router.post("/", ctrl.create);
 
 module.exports = router;

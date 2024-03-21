@@ -1,6 +1,5 @@
-class BrandController {
-  async create(req, res) {}
-  async getAll(req, res) {}
-}
+const create = async (req, res) => {};
 
-module.exports = new BrandController();
+const getAll = async (req, res) => {};
+
+module.exports = { create, getAll };
