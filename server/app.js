@@ -6,7 +6,6 @@ const deviceRouter = require("./routes/deviceRouter");
 const userRouter = require("./routes/userRouter");
 const brandRouter = require("./routes/brandRouter");
 const typeRouter = require("./routes/typeRouter");
-const errorHandler = require("./middleware/ErrorHandlingMiddleware");
 
 const app = express();
 app.use(cors());
@@ -20,7 +19,15 @@ app.use("/api/device", deviceRouter);
 //   res.status(200).json({ message: "it's working!" });
 // });
 
+app.use((_, res) => {
+  res.status(404).json({ message: "Route not found" });
+});
+
 //the last middleware is the error handling one
-app.use(errorHandler);
+app.use((err, req, res, next) => {
+  const { status, message } = err;
+  res.status(status).json({ message });
+  console.log(err);
+});
 
 module.exports = app;
