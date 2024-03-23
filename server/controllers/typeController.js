@@ -1,7 +1,15 @@
-const create = async (req, res) => {};
+const { Type } = require("../models/models");
+const { ctrlWrapper } = require("../helpers");
 
-const getAll = async (req, res) => {
-  res.status(200).json({ message: "it's working!" });
+const create = async (req, res) => {
+  const { name } = req.body;
+  const type = await Type.create({ name });
+  return res.json(type);
 };
 
-module.exports = { create, getAll };
+const getAll = async (req, res) => {
+  const types = await Type.findAll();
+  return res.json(types);
+};
+
+module.exports = { create: ctrlWrapper(create), getAll: ctrlWrapper(getAll) };
