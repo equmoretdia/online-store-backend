@@ -3,7 +3,38 @@ const { ctrlWrapper } = require("../helpers");
 
 const create = async (req, res) => {};
 
-const getAll = async (req, res) => {};
+const getAll = async (req, res) => {
+  let { brandId, typeId, limit, page } = req.query;
+  page = page || 1;
+  limit = limit || 9;
+  let offset = page * limit - limit;
+  let devices;
+  if (!brandId && !typeId) {
+    devices = await Device.findAndCountAll({ limit, offset });
+  }
+  if (brandId && !typeId) {
+    devices = await Device.findAndCountAll({
+      where: { brandId },
+      limit,
+      offset,
+    });
+  }
+  if (!brandId && typeId) {
+    devices = await Device.findAndCountAll({
+      where: { typeId },
+      limit,
+      offset,
+    });
+  }
+  if (brandId && typeId) {
+    devices = await Device.findAndCountAll({
+      where: { typeId, brandId },
+      limit,
+      offset,
+    });
+  }
+  return res.json(devices);
+};
 
 const getOne = async (req, res) => {
   const { id } = req.params;
@@ -14,4 +45,8 @@ const getOne = async (req, res) => {
   return res.json(device);
 };
 
-module.exports = { create, getAll, getOne: ctrlWrapper(getOne) };
+module.exports = {
+  create,
+  getAll: ctrlWrapper(getAll),
+  getOne: ctrlWrapper(getOne),
+};
