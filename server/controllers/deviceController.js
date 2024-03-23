@@ -1,7 +1,34 @@
+const uuid = require("uuid");
+
 const { Device, DeviceInfo } = require("../models/models");
 const { ctrlWrapper } = require("../helpers");
 
-const create = async (req, res) => {};
+const create = async (req, res) => {
+  let { name, price, brandId, typeId, info } = req.body;
+  const { img } = req.files;
+  let fileName = uuid.v4() + ".jpg";
+  img.mv(path.resolve(__dirname, "..", "static", fileName));
+  const device = await Device.create({
+    name,
+    price,
+    brandId,
+    typeId,
+    img: fileName,
+  });
+
+  if (info) {
+    info = JSON.parse(info);
+    info.forEach((i) =>
+      DeviceInfo.create({
+        title: i.title,
+        description: i.description,
+        deviceId: device.id,
+      })
+    );
+  }
+
+  return res.json(device);
+};
 
 const getAll = async (req, res) => {
   let { brandId, typeId, limit, page } = req.query;
