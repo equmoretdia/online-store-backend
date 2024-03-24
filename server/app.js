@@ -29,7 +29,11 @@ app.use((_, res) => {
 
 //the last middleware is the error handling one
 app.use((err, req, res, next) => {
-  const { status, message } = err;
+  // default values are set to prevent the situation when
+  // the error thrown doesn't have an explicit status code
+  //  set, 'RangeError[ERR_HTTP_INVALID_STATUS_CODE]:
+  // Invalid status code: undefined' occurrance
+  const { status = 500, message = "Server error" } = err;
   res.status(status).json({ message });
   console.log(err);
 });
