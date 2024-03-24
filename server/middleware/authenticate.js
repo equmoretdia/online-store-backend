@@ -4,12 +4,13 @@ const { ApiError } = require("../helpers");
 
 const { SECRET_KEY } = process.env;
 
-const authenticate = (req, res, next) => {
-  if (req.method === "OPTIONS") {
-    next();
+const authenticate = async (req, res, next) => {
+  const { authorization = "" } = req.headers;
+  const [bearer, token] = authorization.split(" ");
+  if (bearer !== "Bearer") {
+    next(ApiError(401));
   }
   try {
-    const token = req.headers.authorization.split(" ");
     if (!token) {
       next(ApiError(401));
     }

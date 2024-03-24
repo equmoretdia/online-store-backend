@@ -6,6 +6,12 @@ const { ApiError, ctrlWrapper } = require("../helpers");
 
 const { SECRET_KEY } = process.env;
 
+const generateJwt = (id, email, role) => {
+  return jwt.sign({ id, email, role }, SECRET_KEY, {
+    expiresIn: "24h",
+  });
+};
+
 const registration = async (req, res) => {
   const { email, password, role } = req.body;
   if (!email || !password) {
@@ -18,9 +24,7 @@ const registration = async (req, res) => {
   const hashPassword = await bcrypt.hash(password, 5);
   const user = await User.create({ email, password: hashPassword, role });
   const basket = await Basket.create({ userId: user.id });
-  const token = jwt.sign({ id: user.id, email, role }, SECRET_KEY, {
-    expiresIn: "24h",
-  });
+  const token = generateJwt(user.id, user.email, user.role);
   return res.json({ token });
 };
 
@@ -34,23 +38,14 @@ const login = async (req, res) => {
   if (!comparePassword) {
     throw ApiError(401, "Invalid password!");
   }
-  const token = jwt.sign(
-    { id: user.id, email: user.email, role: user.role },
-    SECRET_KEY,
-    {
-      expiresIn: "24h",
-    }
-  );
+  const token = generateJwt(user.id, user.email, user.role);
   return res.json({ token });
 };
 
 const checkAuth = async (req, res) => {
-  const { id } = req.query;
-  if (!id) {
-    // return next(httpError(403));
-    throw ApiError(500, "bad luck");
-  }
-  res.json(id);
+  const { user } = req;
+  const token = generateJwt(user.id, user.email, user.role);
+  return res.json({ token });
 };
 
 module.exports = {
