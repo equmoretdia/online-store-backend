@@ -24,7 +24,25 @@ const registration = async (req, res) => {
   return res.json({ token });
 };
 
-const login = async (req, res) => {};
+const login = async (req, res) => {
+  const { email, password } = req.body;
+  const user = await User.findOne({ where: { email } });
+  if (!user) {
+    throw ApiError(401, "Email or password invalid!");
+  }
+  const comparePassword = await bcrypt.compareSync(password, user.password);
+  if (!comparePassword) {
+    throw ApiError(401, "Invalid password!");
+  }
+  const token = jwt.sign(
+    { id: user.id, email: user.email, role: user.role },
+    SECRET_KEY,
+    {
+      expiresIn: "24h",
+    }
+  );
+  return res.json({ token });
+};
 
 const checkAuth = async (req, res) => {
   const { id } = req.query;
@@ -37,7 +55,7 @@ const checkAuth = async (req, res) => {
 
 module.exports = {
   registration: ctrlWrapper(registration),
-  login,
+  login: ctrlWrapper(login),
   checkAuth: ctrlWrapper(checkAuth),
 };
 
