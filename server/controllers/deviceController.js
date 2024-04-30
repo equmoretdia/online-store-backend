@@ -5,7 +5,7 @@ const { Device, DeviceInfo } = require("../models/models");
 const { ctrlWrapper } = require("../helpers");
 
 const create = async (req, res) => {
-  const { name, price, brandId, typeId, info } = req.body;
+  let { name, price, brandId, typeId, info } = req.body;
   const { img } = req.files;
   const fileName = uuid.v4() + ".jpg";
   img.mv(path.resolve(__dirname, "..", "public", fileName));
